@@ -1,0 +1,266 @@
+{
+  "name": "gmail_interviewCall_reply",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        -32
+      ],
+      "id": "e5d669fa-c883-4a86-b2a6-ba7e526b0878",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.Subject }}{{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "job interview call ",
+              "description": "the text which is describing for the job interview call"
+            },
+            {
+              "category": "normal email",
+              "description": "the text which is not describing the job interview call"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        -32
+      ],
+      "id": "8945a427-e575-445d-9fec-67a40c302be6",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        0,
+        176
+      ],
+      "id": "a8f75a72-451f-44e3-9128-a3620b4c49b3",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YOUR_OPENROUTER_CREDENTIAL_ID",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Reply to the following email in formal tone .\n subject :  {{ $('Gmail Trigger').item.json.Subject }}  \",\nemail content : \"{{ $('Gmail Trigger').item.json.snippet }} \"",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        352,
+        -128
+      ],
+      "id": "c5783d85-2f09-4c07-9622-40e2e35e1289",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        352,
+        80
+      ],
+      "id": "955895e6-7457-4384-bde9-25cc2be8ef1d",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "YOUR_OPENROUTER_CREDENTIAL_ID",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"reply email\": \"this is reply email content\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        80
+      ],
+      "id": "5486afda-fecc-4130-bc7d-2e337152380f",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "message": "={{ $json.output['reply email'] }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        -128
+      ],
+      "id": "2ca34f70-4f5a-4855-8228-5a54c9429bc6",
+      "name": "Reply to a message",
+      "webhookId": "YOUR_WEBHOOK_ID",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Gmail Trigger": [
+      {
+        "json": {
+          "id": "19a00f67688467ef",
+          "threadId": "19a00f67688467ef",
+          "snippet": "Dear MAHESH KETAM, Thanks for applying for the role of Gen Ai Intern. My name is Ann. I am an AI Recruiter. I will help you through the first stage of the interview process. Let&#39;s start with",
+          "payload": {
+            "mimeType": "multipart/alternative"
+          },
+          "sizeEstimate": 6853,
+          "historyId": "187041",
+          "internalDate": "1760952731000",
+          "labels": [
+            {
+              "id": "INBOX",
+              "name": "INBOX"
+            },
+            {
+              "id": "IMPORTANT",
+              "name": "IMPORTANT"
+            },
+            {
+              "id": "CATEGORY_PERSONAL",
+              "name": "CATEGORY_PERSONAL"
+            },
+            {
+              "id": "UNREAD",
+              "name": "UNREAD"
+            }
+          ],
+          "From": "Sender Name <sender@example.com>",
+          "Subject": "Anna - Book Interview Slot",
+          "To": "recipient@example.com"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c9c3b335-39c2-4954-a354-c1725a88e2db",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d01d7a257eece8117e454e0fbbfaf3197567a88897895c03b947fbc0bf9eac92"
+  },
+  "id": "WORKFLOW_TEMPLATE_ID",
+  "tags": []
+}

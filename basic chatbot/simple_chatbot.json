@@ -13,7 +13,7 @@
       ],
       "id": "36d5cc5e-fc79-4adc-b7a0-8b4bcf45b0bb",
       "name": "When chat message received",
-      "webhookId": "5271227f-b309-4223-9bb8-9addcc1e99a0"
+      "webhookId": "YOUR_WEBHOOK_ID"
     },
     {
       "parameters": {
@@ -42,7 +42,7 @@
       "name": "OpenRouter Chat Model",
       "credentials": {
         "openRouterApi": {
-          "id": "4YdIvbXEVjX9x1RA",
+          "id": "YOUR_OPENROUTER_CREDENTIAL_ID",
           "name": "OpenRouter account"
         }
       }
@@ -104,6 +104,6 @@
     "templateCredsSetupCompleted": true,
     "instanceId": "d01d7a257eece8117e454e0fbbfaf3197567a88897895c03b947fbc0bf9eac92"
   },
-  "id": "6cR5O2D6RxXXg64C",
+  "id": "WORKFLOW_TEMPLATE_ID",
   "tags": []
 }
