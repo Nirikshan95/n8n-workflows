@@ -1,0 +1,204 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Client intake form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name ",
+              "placeholder": "Enter your Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "Enter your Email ID",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "d7bd1056-9dda-4adc-a472-520a56835f7d",
+      "name": "On form submission",
+      "webhookId": "cdff2433-657e-46f9-86ff-b9f9b426ae3b"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_ID_PLACEHOLDER",
+          "mode": "list",
+          "cachedResultName": "dummy_clients_intake",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/GOOGLE_SHEET_ID_PLACEHOLDER/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/GOOGLE_SHEET_ID_PLACEHOLDER/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json['Name '] }}",
+            "Email": "={{ $json.Email }}",
+            "Time": "={{ $json.submittedAt }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        -112
+      ],
+      "id": "b6457007-8009-4ad2-b65d-80ed00ac0332",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PLACEHOLDER_SHEET_ID",
+          "name": "Google Sheets account placeholder"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "ADMIN_EMAIL_PLACEHOLDER",
+        "subject": "=New form submission — {{ $json.Name }} — {{ $json.Time }}",
+        "message": "=<!doctype html>\n<html>\n<head>\n  <meta charset=\"utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n  <title>New Form Submission</title>\n  <style>\n    :root{\n      --bg:#f4f7fb;\n      --card:#ffffff;\n      --accent:#0A66C2;        /* primary accent (LinkedIn-blue-like) */\n      --muted:#6b7280;\n      --success:#10b981;\n      --shadow: 0 6px 18px rgba(11,35,71,0.08);\n      --radius:12px;\n      --mono: \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;\n    }\n    body{\n      margin:0;\n      background: linear-gradient(180deg, var(--bg), #eef4ff);\n      font-family: var(--mono);\n      color:#0b1220;\n      -webkit-font-smoothing:antialiased;\n    }\n    .container{\n      width:100%;\n      padding:28px 16px;\n      box-sizing:border-box;\n    }\n    .card{\n      max-width:720px;\n      margin:0 auto;\n      background:var(--card);\n      border-radius:var(--radius);\n      box-shadow:var(--shadow);\n      overflow:hidden;\n    }\n    .header{\n      padding:22px 24px;\n      display:flex;\n      align-items:center;\n      gap:16px;\n      background: linear-gradient(90deg, rgba(10,102,194,0.06), rgba(16,185,129,0.03));\n    }\n    .logo {\n      width:48px;\n      height:48px;\n      border-radius:10px;\n      display:inline-flex;\n      align-items:center;\n      justify-content:center;\n      font-weight:700;\n      color:white;\n      background:var(--accent);\n      box-shadow: 0 2px 8px rgba(10,102,194,0.16);\n    }\n    .title{\n      font-size:16px;\n      font-weight:700;\n      color:#05203a;\n    }\n    .meta{\n      padding:18px 24px;\n      border-bottom:1px solid #f1f5f9;\n      display:flex;\n      gap:18px;\n      flex-wrap:wrap;\n    }\n    .meta .item{\n      font-size:13px;\n      color:var(--muted);\n    }\n    .content{\n      padding:20px 24px 28px 24px;\n    }\n    .fields-table{\n      width:100%;\n      border-collapse:collapse;\n      margin-top:8px;\n    }\n    .fields-table th{\n      text-align:left;\n      font-size:13px;\n      color:var(--muted);\n      padding:8px 10px;\n      background: #fbfdff;\n    }\n    .fields-table td{\n      padding:10px;\n      font-size:14px;\n      border-top:1px solid #f3f5f8;\n      vertical-align:top;\n    }\n    .cta{\n      margin-top:18px;\n      display:flex;\n      gap:12px;\n      flex-wrap:wrap;\n    }\n    .btn{\n      display:inline-block;\n      padding:10px 14px;\n      border-radius:10px;\n      text-decoration:none;\n      font-weight:600;\n      font-size:14px;\n      box-shadow:0 6px 18px rgba(10,102,194,0.08);\n    }\n    .btn-primary{ background:var(--accent); color:#fff; }\n    .btn-ghost{ background:transparent; color:var(--accent); border:1px solid rgba(10,102,194,0.12); }\n    .footer{\n      padding:16px 24px;\n      font-size:12px;\n      color:var(--muted);\n      border-top:1px solid #f1f5f9;\n      display:flex;\n      justify-content:space-between;\n      align-items:center;\n    }\n    .small{\n      font-size:12px;\n      color:#8b93a3;\n    }\n    @media (max-width:520px){\n      .card{ margin:0 12px; }\n      .meta{ gap:10px; padding:12px; }\n      .header{ padding:16px; }\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"card\" role=\"article\" aria-label=\"New form submission notification\">\n      <div class=\"header\">\n        <div class=\"logo\">MK</div>\n        <div>\n          <div class=\"title\">New submission received — {{ $json.Name }}</div>\n        </div>\n      </div>\n\n      <div class=\"meta\" aria-hidden=\"false\">\n        <div class=\"item\">Submitted at: <strong>{{ $json.Time }}</strong></div>\n        <div class=\"item\">Source: <strong>client intake form</strong></div>\n      </div>\n\n      <div class=\"content\">\n        <p style=\"margin:0; color:#12304a; font-weight:600;\">Primary contact</p>\n        <table class=\"fields-table\" role=\"table\" aria-label=\"Primary contact\">\n          <tr>\n            <th style=\"width:160px\">Field</th>\n            <th>Value</th>\n          </tr>\n          <tr>\n            <td><strong>Name</strong></td>\n            <td>{{ $('On form submission').item.json['Name '] }}</td>\n          </tr>\n          <tr>\n            <td><strong>Email</strong></td>\n            <td>{{ $('On form submission').item.json.Email }}</td>\n          </tr>\n        </table>\n        </table>\n\n      </div>\n\n      <div class=\"footer\">\n        <div>Team • ProfileMagnet</div>\n        <div class=\"small\">If this looks suspicious, investigate or mark as spam.</div>\n      </div>\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        464,
+        -112
+      ],
+      "id": "893cb9d7-4f86-4e9a-b8fe-efa4ffe4bd30",
+      "name": "Send a message",
+      "webhookId": "f0189971-3b6d-4ec2-8613-b995c5e456e8",
+      "notesInFlow": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "PLACEHOLDER_GMAIL_ID",
+          "name": "Gmail account placeholder"
+        }
+      },
+      "notes": "sends mail to admin"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Thanks — we received your submission, {{ $json.Name }}!",
+        "message": "=<!doctype html>\n<html>\n<head>\n  <meta charset=\"utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n  <title>Thanks — we received your submission</title>\n  <style>\n    :root{\n      --bg:#f9fbff;\n      --card:#ffffff;\n      --accent:#0A66C2;\n      --accent-2:#06b6d4;\n      --muted:#5b6470;\n      --radius:14px;\n      --shadow:0 10px 30px rgba(9,30,66,0.08);\n      --mono: \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;\n    }\n    body{ margin:0; background:linear-gradient(180deg,#fbfdff,#f2f8ff); font-family:var(--mono); color:#0b1220; }\n    .wrap{ padding:28px 16px; }\n    .email{ max-width:680px; margin:0 auto; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }\n    .hero{ padding:28px 24px; text-align:center; background:\n      linear-gradient(180deg, rgba(10,102,194,0.06), rgba(6,182,212,0.03)); }\n    .badge{ display:inline-block; background:var(--accent); color:#fff; padding:10px 14px; border-radius:10px; font-weight:700; }\n    h1{ margin:14px 0 6px 0; font-size:20px; color:#05203a; }\n    p.lead{ margin:0; color:var(--muted); font-size:15px; }\n    .body{ padding:20px 24px 28px 24px; }\n    .summary{\n      margin-top:12px;\n      background:#fbfdff;\n      border-radius:10px;\n      padding:12px;\n      border:1px solid #eef6ff;\n    }\n    .summary .row{ display:flex; gap:12px; align-items:center; margin-bottom:8px; }\n    .label{ min-width:110px; font-weight:700; color:#0b1220; font-size:14px; }\n    .value{ color:#16324a; font-size:14px; }\n    .actions{ margin-top:18px; display:flex; gap:12px; flex-wrap:wrap; }\n    .btn{ text-decoration:none; padding:10px 14px; border-radius:10px; font-weight:700; font-size:14px; display:inline-block; }\n    .btn-primary{ background:var(--accent); color:#fff; }\n    .btn-secondary{ background:transparent; color:var(--accent); border:1px solid rgba(10,102,194,0.12); }\n    .note{ margin-top:14px; font-size:13px; color:var(--muted); }\n    .footer{ padding:18px 24px; border-top:1px solid #eef5ff; font-size:13px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; }\n    @media (max-width:520px){\n      .label{ min-width:88px; }\n      .hero{ padding:20px; }\n    }\n  </style>\n</head>\n<body>\n  <div class=\"wrap\">\n    <div class=\"email\" role=\"article\" aria-label=\"Thank you for your submission\">\n      <div class=\"hero\">\n        <div class=\"badge\">Thanks!</div>\n        <h1>Hello {{ $json.Name }},</h1>\n        <p class=\"lead\">We received your submission for <strong>Client intake form</strong>. Thanks for reaching out — we've got it and will review it shortly.</p>\n      </div>\n\n      <div class=\"body\">\n        <div class=\"summary\" role=\"group\" aria-label=\"Submission summary\">\n          <div class=\"row\">\n            <div class=\"label\">Name</div>\n            <div class=\"value\">{{ $('On form submission').item.json['Name '] }}</div>\n          </div>\n          <div class=\"row\">\n            <div class=\"label\">Email</div>\n            <div class=\"value\">{{ $('On form submission').item.json.Email }}</div>\n          </div>\n        </div>\n\n        <p class=\"note\">\n          Typical response time: <strong>1–2 business days</strong>.\n        </p>\n      </div>\n\n      <div class=\"footer\">\n        <div>ProfileMagnet</div>\n        <div style=\"font-size:12px;color:#97a0b5;\">Ref: • {{ $('On form submission').item.json.submittedAt }}</div>\n      </div>\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        432,
+        96
+      ],
+      "id": "186b8a8d-ae6a-49e6-89d7-3f6394d7b3b3",
+      "name": "Send a message1",
+      "webhookId": "e8fb6364-5d31-45e4-8ae2-16357052cf6f",
+      "notesInFlow": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "PLACEHOLDER_GMAIL_ID",
+          "name": "Gmail account placeholder"
+        }
+      },
+      "notes": "sends mail to admin"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6c2e2bd5-ecf3-449e-a43e-d3244ddfc530",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d01d7a257eece8117e454e0fbbfaf3197567a88897895c03b947fbc0bf9eac92"
+  },
+  "id": "kvcgy73SGPFSw4Z0",
+  "tags": []
+}
