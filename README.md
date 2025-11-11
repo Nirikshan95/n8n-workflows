@@ -11,6 +11,8 @@ n8n is a fair-code licensed workflow automation tool that helps you connect diff
 1. [Basic Chatbot](basic%20chatbot/) - A simple chatbot implementation using AI nodes
 2. [Gmail Interview Call Reply](gmail_interviewCall_reply/) - Automatically detects job interview call emails and generates professional replies
 3. [Client Intake Automation](Client%20Intake%20Automation/) - Automates client intake by capturing form submissions, storing in Google Sheets, and sending notification emails
+4. [QuizGen AI Support Chatbot](QuizGen-AI_support_chatbot/) - Official chatbot for the QuizGen AI platform that answers questions about usage, features, and setup
+5. [Telegram Chat Assistant](telegram_assistant/) - AI-powered assistant that responds to messages directly in Telegram
 
 ## How to Use These Workflows
 
