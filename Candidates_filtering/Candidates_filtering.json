@@ -1,0 +1,545 @@
+{
+  "name": "Candidates_filtering",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "AI Screener Demo",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name ",
+              "placeholder": "Enter your name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email ID",
+              "fieldType": "email",
+              "placeholder": "Enter you email id",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Resume",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": "pdf",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Role",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Web Developer"
+                  },
+                  {
+                    "option": "AI Engineer"
+                  },
+                  {
+                    "option": "Java Developer"
+                  },
+                  {
+                    "option": "App Developer"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "customCss": ":root {\n  /* Typography - Bold, modern fonts */\n  --font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;\n  --font-weight-normal: 400;\n  --font-weight-medium: 500;\n  --font-weight-semibold: 600;\n  --font-weight-bold: 700;\n  \n  /* Font Sizes - Larger, more impactful */\n  --font-size-body: 16px;\n  --font-size-label: 14px;\n  --font-size-input: 16px;\n  --font-size-header: 32px;\n  --font-size-subheader: 18px;\n  --font-size-error: 14px;\n  --font-size-link: 14px;\n  \n  /* BOLD COLOR SCHEME - Vibrant & Modern */\n  --color-primary: #8b5cf6;        /* Vibrant purple */\n  --color-primary-hover: #7c3aed;\n  --color-primary-light: #f5f3ff;\n  \n  --color-accent: #ec4899;         /* Hot pink */\n  --color-accent-hover: #db2777;\n  \n  --color-success: #22c55e;        /* Bright green */\n  --color-warning: #f59e0b;        /* Amber */\n  --color-error: #ef4444;          /* Bright red */\n  \n  /* Background - Deep, rich colors */\n  --color-background: #0f0f23;     /* Deep navy/black */\n  --color-surface: #1a1a2e;        /* Dark purple-blue */\n  --color-card-bg: #16213e;        /* Rich dark blue */\n  \n  /* Text - High contrast */\n  --color-text-primary: #ffffff;\n  --color-text-secondary: #e2e8f0;\n  --color-text-muted: #94a3b8;\n  \n  /* Gradients - Eye-catching */\n  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n  --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);\n  --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);\n  \n  /* Form Elements - Striking design */\n  --color-input-bg: rgba(255, 255, 255, 0.05);\n  --color-input-border: rgba(139, 92, 246, 0.3);\n  --color-input-border-focus: #8b5cf6;\n  --color-input-text: #ffffff;\n  --color-input-placeholder: #64748b;\n  \n  /* Buttons - Bold gradients */\n  --color-button-bg: var(--gradient-primary);\n  --color-button-text: #ffffff;\n  --color-button-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);\n  \n  /* Card styling - Elevated, glowing */\n  --color-card-border: rgba(139, 92, 246, 0.2);\n  --color-card-glow: 0 0 40px rgba(139, 92, 246, 0.15);\n  --box-shadow-card: 0 20px 60px rgba(0, 0, 0, 0.5), var(--color-card-glow);\n  \n  /* Notice/Alert - Vibrant warning */\n  --color-notice-bg: rgba(245, 158, 11, 0.1);\n  --color-notice-border: #f59e0b;\n  --color-notice-text: #fbbf24;\n  \n  /* Border Radii - Smooth, modern curves */\n  --border-radius-card: 20px;\n  --border-radius-input: 12px;\n  --border-radius-button: 12px;\n  --border-radius-full: 9999px;\n  \n  /* Spacing - Generous, breathable */\n  --padding-card: 32px;\n  --padding-input: 16px;\n  --padding-button: 16px 32px;\n  --gap-form: 24px;\n  --margin-section: 40px;\n  \n  /* Dimensions - Larger touch targets */\n  --container-width: 520px;\n  --input-height: 56px;\n  --button-height: 56px;\n  --checkbox-size: 24px;\n  \n  /* Shadows - Dramatic depth */\n  --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);\n  --shadow-button: 0 10px 30px rgba(139, 92, 246, 0.4);\n  --shadow-button-hover: 0 15px 40px rgba(139, 92, 246, 0.6);\n  --shadow-input-focus: 0 0 0 4px rgba(139, 92, 246, 0.2);\n  \n  /* Transitions - Smooth animations */\n  --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);\n  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);\n  --transition-bounce: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);\n  \n  /* Effects - Modern touches */\n  --backdrop-blur: blur(20px);\n  --border-glow: 0 0 10px rgba(139, 92, 246, 0.5);\n}\n\n/* Alternative: Light Mode with Vibrant Colors */\n.light-theme {\n  --color-background: #fafafa;\n  --color-surface: #ffffff;\n  --color-card-bg: #ffffff;\n  \n  --color-text-primary: #1e293b;\n  --color-text-secondary: #475569;\n  --color-text-muted: #64748b;\n  \n  --color-input-bg: #f8fafc;\n  --color-input-border: #e2e8f0;\n  --color-input-text: #1e293b;\n  \n  --color-card-border: #e2e8f0;\n  --box-shadow-card: 0 10px 40px rgba(139, 92, 246, 0.1);\n}\n\n/* Alternative: Neon/Cyberpunk Theme */\n.neon-theme {\n  --color-primary: #00ff88;        /* Neon green */\n  --color-accent: #ff00ff;         /* Neon magenta */\n  --color-background: #000000;\n  --color-card-bg: #0a0a0a;\n  --color-text-primary: #00ff88;\n  \n  --gradient-primary: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);\n  --shadow-glow: 0 0 30px rgba(0, 255, 136, 0.5);\n  --border-glow: 0 0 15px rgba(0, 255, 136, 0.8);\n}\n\n/* Alternative: Warm Sunset Theme */\n.sunset-theme {\n  --color-primary: #ff6b6b;        /* Coral red */\n  --color-accent: #ffd93d;         /* Golden yellow */\n  --color-background: #2d1b69;     /* Deep purple */\n  --color-card-bg: #3d2c8d;        /* Rich purple */\n  --color-text-primary: #fff5e1;\n  \n  --gradient-primary: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);\n  --shadow-glow: 0 0 40px rgba(255, 107, 107, 0.4);\n}\n"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        32
+      ],
+      "id": "b80d8940-8f3a-4345-bdf9-9ab2cc12f12a",
+      "name": "On form submission",
+      "webhookId": "58bff409-d871-4316-b442-cad23d5a2b65"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Role }}",
+                    "rightValue": "Web Developer",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3f6985f5-771c-4c18-a608-fd2825d61eca"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Web Developer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "41f98f3f-6be2-4275-941a-eb0e04e5ca71",
+                    "leftValue": "={{ $json.Role }}",
+                    "rightValue": "AI Engineer",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "AI Engineer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "81e9712f-1da6-4751-b322-86ad6c1f07b2",
+                    "leftValue": "={{ $json.Role }}",
+                    "rightValue": "Java Developer",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Java Developer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "18939803-266b-4970-88f2-04469067ac0d",
+                    "leftValue": "={{ $json.Role }}",
+                    "rightValue": "App Developer",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "App Developer"
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        384,
+        -352
+      ],
+      "id": "a78d64ed-c28c-4dff-a584-f43a021c3e54",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('On form submission').item.json.Resume.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1OHm_QIOd9_bbC-brmiXAWaXAQkT5P8_A",
+          "mode": "list",
+          "cachedResultName": "Web Developer resumes",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1OHm_QIOd9_bbC-brmiXAWaXAQkT5P8_A"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        592,
+        -512
+      ],
+      "id": "434ad8d4-ee25-413e-9bfd-b73ecbac07be",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "FheEYY2SngbNEhwz",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('On form submission').item.json.Resume.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1OAdeahRkYuQgeVME70afvcdBGlC8XOoD",
+          "mode": "list",
+          "cachedResultName": "AI Enginner resumes",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1OAdeahRkYuQgeVME70afvcdBGlC8XOoD"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        784,
+        -400
+      ],
+      "id": "90a9099b-f143-4246-a14e-835e65aff9c2",
+      "name": "Upload file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "FheEYY2SngbNEhwz",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('On form submission').item.json.Resume.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "13I-HGy1QS7dRt3JbNg-gmcxrFEB0gABB",
+          "mode": "list",
+          "cachedResultName": "Java Developer resumes",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/13I-HGy1QS7dRt3JbNg-gmcxrFEB0gABB"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        784,
+        -240
+      ],
+      "id": "45a43221-b8ba-418f-95f0-49779b8340df",
+      "name": "Upload file2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "FheEYY2SngbNEhwz",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('On form submission').item.json.Resume.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1oRER6Kj8H48OUT6cD7Wo5Gg8RZ0zow7a",
+          "mode": "list",
+          "cachedResultName": "App Developer resumes",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1oRER6Kj8H48OUT6cD7Wo5Gg8RZ0zow7a"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        592,
+        -144
+      ],
+      "id": "1eeb0be0-7407-4fa5-ad3e-1414e83284af",
+      "name": "Upload file3",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "FheEYY2SngbNEhwz",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Storing Resume\n**Stores in Drive** ",
+        "height": 544,
+        "width": 592
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        -544
+      ],
+      "typeVersion": 1,
+      "id": "69f517eb-c586-4e20-b492-97f190903581",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Resume",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        32
+      ],
+      "id": "514035f9-e758-44e3-88d1-ebaf82770f3b",
+      "name": "Extract from Resume",
+      "retryOnFail": true,
+      "maxTries": 2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Rank the resume out of 10 for the role of {{ $('On form submission').item.json.Role }} . Rank wisely.\nif the rank of the resume is above 7.5 then write and short highlight of the candidate . else  keep highlights with empty string .",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an Expert candidate screening with resumes . your job is to rank the resume"
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        480,
+        32
+      ],
+      "id": "5cbb17b6-9997-409c-b6b4-1d2200a9a037",
+      "name": "Resume Ranker"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-flash-latest",
+        "options": {
+          "maxOutputTokens": 1000,
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        400,
+        256
+      ],
+      "id": "110cbb1a-05d2-4610-8eff-453ce9cea628",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "XHVI8Ilz15vI8vUb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxOutputTokens": 1000,
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        560,
+        304
+      ],
+      "id": "31001eb6-cff3-4dce-bf8b-3dc3f39450c7",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "XHVI8Ilz15vI8vUb",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"rank\": 7,\n\t\"highlights\": \"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        256
+      ],
+      "id": "2543f9cc-e501-41eb-8d59-b47584de43d5",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {
+    "Resume Ranker": [
+      {
+        "json": {
+          "output": {
+            "rank": 8.5,
+            "highlights": "Strong proficiency in modern JavaScript frameworks (React/Vue), coupled with robust experience in responsive design and API integration."
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract from Resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upload file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upload file2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upload file3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from Resume": {
+      "main": [
+        [
+          {
+            "node": "Resume Ranker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Resume Ranker",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Resume Ranker",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Resume Ranker",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ee960977-58fe-4c7a-b1d0-fe5a8e906501",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e9c80629f938075ea43b6f3dc6d481c44b7fff12ee83b490156981465271a6f1"
+  },
+  "id": "uEmoPRxuI9z3BsEn",
+  "tags": []
+}
