@@ -21,7 +21,7 @@
               "fieldLabel": "Resume",
               "fieldType": "file",
               "multipleFiles": false,
-              "acceptFileTypes": "pdf",
+              "acceptFileTypes": ".pdf",
               "requiredField": true
             },
             {
@@ -182,137 +182,9 @@
     },
     {
       "parameters": {
-        "name": "={{ $('On form submission').item.json.Resume.filename }}",
-        "driveId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "1OHm_QIOd9_bbC-brmiXAWaXAQkT5P8_A",
-          "mode": "list",
-          "cachedResultName": "Web Developer resumes",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1OHm_QIOd9_bbC-brmiXAWaXAQkT5P8_A"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        592,
-        -512
-      ],
-      "id": "434ad8d4-ee25-413e-9bfd-b73ecbac07be",
-      "name": "Upload file",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "FheEYY2SngbNEhwz",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "name": "={{ $('On form submission').item.json.Resume.filename }}",
-        "driveId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "1OAdeahRkYuQgeVME70afvcdBGlC8XOoD",
-          "mode": "list",
-          "cachedResultName": "AI Enginner resumes",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1OAdeahRkYuQgeVME70afvcdBGlC8XOoD"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        784,
-        -400
-      ],
-      "id": "90a9099b-f143-4246-a14e-835e65aff9c2",
-      "name": "Upload file1",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "FheEYY2SngbNEhwz",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "name": "={{ $('On form submission').item.json.Resume.filename }}",
-        "driveId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "13I-HGy1QS7dRt3JbNg-gmcxrFEB0gABB",
-          "mode": "list",
-          "cachedResultName": "Java Developer resumes",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/13I-HGy1QS7dRt3JbNg-gmcxrFEB0gABB"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        784,
-        -240
-      ],
-      "id": "45a43221-b8ba-418f-95f0-49779b8340df",
-      "name": "Upload file2",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "FheEYY2SngbNEhwz",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "name": "={{ $('On form submission').item.json.Resume.filename }}",
-        "driveId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "1oRER6Kj8H48OUT6cD7Wo5Gg8RZ0zow7a",
-          "mode": "list",
-          "cachedResultName": "App Developer resumes",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1oRER6Kj8H48OUT6cD7Wo5Gg8RZ0zow7a"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        592,
-        -144
-      ],
-      "id": "1eeb0be0-7407-4fa5-ad3e-1414e83284af",
-      "name": "Upload file3",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "FheEYY2SngbNEhwz",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "content": "## Storing Resume\n**Stores in Drive** ",
         "height": 544,
-        "width": 592
+        "width": 656
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
@@ -338,18 +210,21 @@
       "id": "514035f9-e758-44e3-88d1-ebaf82770f3b",
       "name": "Extract from Resume",
       "retryOnFail": true,
-      "maxTries": 2
+      "maxTries": 2,
+      "waitBetweenTries": 3000,
+      "notesInFlow": true,
+      "notes": "Resume content extraction"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Rank the resume out of 10 for the role of {{ $('On form submission').item.json.Role }} . Rank wisely.\nif the rank of the resume is above 7.5 then write and short highlight of the candidate . else  keep highlights with empty string .",
+        "text": "=Evaluate the resume for the role of {{ $('On form submission').item.json.Role }}.\n\nReturn JSON only:\n{\n  \"score\": number (0–10),\n  \"highlights\": string\n}\n\nScoring rules:\n- Judge from  skills, experience, projects, tools, and certifications etc relevant to the role.\n- Penalize missing core skills, irrelevant experience, or low hands-on work.\n\nHighlight rule:\n- If score > 8.5, provide a 1–2 sentence highlight of the strongest strengths.\n- Otherwise return an empty string in \"highlights\".\n\nhere the resume : \"{{ $json.text }}\"\n",
         "hasOutputParser": true,
         "needsFallback": true,
         "messages": {
           "messageValues": [
             {
-              "message": "You are an Expert candidate screening with resumes . your job is to rank the resume"
+              "message": "Evaluate the resume for Java Developer.  Return: {   \"score\": number (0–10),   \"highlights\": string }  Score strictly based on Java-related experience, projects, frameworks, backend exposure, databases, and cloud/DevOps skills.  If score > 8.5, add a brief highlight; else keep highlights empty."
             }
           ]
         },
@@ -364,7 +239,10 @@
         32
       ],
       "id": "5cbb17b6-9997-409c-b6b4-1d2200a9a037",
-      "name": "Resume Ranker"
+      "name": "Resume Ranker",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 4000
     },
     {
       "parameters": {
@@ -423,31 +301,318 @@
       ],
       "id": "2543f9cc-e501-41eb-8d59-b47584de43d5",
       "name": "Structured Output Parser"
-    }
-  ],
-  "pinData": {
-    "Resume Ranker": [
-      {
-        "json": {
-          "output": {
-            "rank": 8.5,
-            "highlights": "Strong proficiency in modern JavaScript frameworks (React/Vue), coupled with robust experience in responsive design and API integration."
-          }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "818673c0-7b7a-4c76-8bb2-e66e61e4ad16",
+              "leftValue": "={{ $json.output.rank }}",
+              "rightValue": 8.5,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        32
+      ],
+      "id": "5387340e-ef5a-4169-8caa-53be89248dc7",
+      "name": "Filter",
+      "notesInFlow": true,
+      "notes": "Filter top candidates"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "Resume",
+        "name": "={{ $('On form submission').item.json.Resume.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1oRER6Kj8H48OUT6cD7Wo5Gg8RZ0zow7a",
+          "mode": "list",
+          "cachedResultName": "App Developer resumes",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1oRER6Kj8H48OUT6cD7Wo5Gg8RZ0zow7a"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        592,
+        -144
+      ],
+      "id": "1eeb0be0-7407-4fa5-ad3e-1414e83284af",
+      "name": "App Developer Resumes",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 3000,
+      "notesInFlow": false,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "FheEYY2SngbNEhwz",
+          "name": "Google Drive account"
         }
       }
-    ]
-  },
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "Resume",
+        "name": "={{ $('On form submission').item.json.Resume.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "13I-HGy1QS7dRt3JbNg-gmcxrFEB0gABB",
+          "mode": "list",
+          "cachedResultName": "Java Developer resumes",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/13I-HGy1QS7dRt3JbNg-gmcxrFEB0gABB"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        784,
+        -240
+      ],
+      "id": "45a43221-b8ba-418f-95f0-49779b8340df",
+      "name": "Java Developer Resumes",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "FheEYY2SngbNEhwz",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "Resume",
+        "name": "={{ $('On form submission').item.json.Resume.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1OAdeahRkYuQgeVME70afvcdBGlC8XOoD",
+          "mode": "list",
+          "cachedResultName": "AI Enginner resumes",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1OAdeahRkYuQgeVME70afvcdBGlC8XOoD"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        784,
+        -400
+      ],
+      "id": "90a9099b-f143-4246-a14e-835e65aff9c2",
+      "name": "AI Engineer Resumes",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "FheEYY2SngbNEhwz",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "Resume",
+        "name": "={{ $('On form submission').item.json.Resume.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1OHm_QIOd9_bbC-brmiXAWaXAQkT5P8_A",
+          "mode": "list",
+          "cachedResultName": "Web Developer resumes",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1OHm_QIOd9_bbC-brmiXAWaXAQkT5P8_A"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        592,
+        -512
+      ],
+      "id": "434ad8d4-ee25-413e-9bfd-b73ecbac07be",
+      "name": "Web Developer Resume",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "FheEYY2SngbNEhwz",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Filtering Candidates \nfiltering top candidates \nout of all candidates \nwho applied for the job",
+        "height": 448,
+        "width": 1648,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -272,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "588a6123-e207-4d57-938e-9087800a82e2",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1KiaTVK9B42FlPl0ikV7EyYHG4WCeU2eZ_EP5EzV6nq0",
+          "mode": "list",
+          "cachedResultName": "TopCandidates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KiaTVK9B42FlPl0ikV7EyYHG4WCeU2eZ_EP5EzV6nq0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KiaTVK9B42FlPl0ikV7EyYHG4WCeU2eZ_EP5EzV6nq0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "DateTime": "={{ $('On form submission').item.json.submittedAt }}",
+            "CandidtaName": "={{ $('On form submission').item.json['Name '] }}",
+            "Email ID": "={{ $('On form submission').item.json['Email ID'] }}",
+            "Role": "={{ $('On form submission').item.json.Role }}",
+            "Rank": "={{ $json.output.rank }}",
+            "Highlights": "={{ $json.output.highlights }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "DateTime",
+              "displayName": "DateTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CandidtaName",
+              "displayName": "CandidtaName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email ID",
+              "displayName": "Email ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rank",
+              "displayName": "Rank",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Highlights",
+              "displayName": "Highlights",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        32
+      ],
+      "id": "bcb7faf0-d042-4e1a-9282-745892af8da8",
+      "name": "Top Candidates",
+      "notesInFlow": false,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ueSX51XWGCEGc3gM",
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "Top Candidates"
+    }
+  ],
+  "pinData": {},
   "connections": {
     "On form submission": {
       "main": [
         [
           {
-            "node": "Switch",
+            "node": "Extract from Resume",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Extract from Resume",
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -458,28 +623,28 @@
       "main": [
         [
           {
-            "node": "Upload file",
+            "node": "Web Developer Resume",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Upload file1",
+            "node": "AI Engineer Resumes",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Upload file2",
+            "node": "Java Developer Resumes",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Upload file3",
+            "node": "App Developer Resumes",
             "type": "main",
             "index": 0
           }
@@ -529,13 +694,35 @@
           }
         ]
       ]
+    },
+    "Resume Ranker": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Top Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ee960977-58fe-4c7a-b1d0-fe5a8e906501",
+  "versionId": "97315662-ee5a-4c6d-ac65-a34c010c0942",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e9c80629f938075ea43b6f3dc6d481c44b7fff12ee83b490156981465271a6f1"
