@@ -3,11 +3,11 @@
   "nodes": [
     {
       "parameters": {
-        "formTitle": "AI Screener Demo",
+        "formTitle": "AI Screener",
         "formFields": {
           "values": [
             {
-              "fieldLabel": "Name ",
+              "fieldLabel": "Name",
               "placeholder": "Enter your name",
               "requiredField": true
             },
@@ -217,35 +217,6 @@
     },
     {
       "parameters": {
-        "promptType": "define",
-        "text": "=Evaluate the resume for the role of {{ $('On form submission').item.json.Role }}.\n\nReturn JSON only:\n{\n  \"score\": number (0–10),\n  \"highlights\": string\n}\n\nScoring rules:\n- Judge from  skills, experience, projects, tools, and certifications etc relevant to the role.\n- Penalize missing core skills, irrelevant experience, or low hands-on work.\n\nHighlight rule:\n- If score > 8.5, provide a 1–2 sentence highlight of the strongest strengths.\n- Otherwise return an empty string in \"highlights\".\n\nhere the resume : \"{{ $json.text }}\"\n",
-        "hasOutputParser": true,
-        "needsFallback": true,
-        "messages": {
-          "messageValues": [
-            {
-              "message": "Evaluate the resume for Java Developer.  Return: {   \"score\": number (0–10),   \"highlights\": string }  Score strictly based on Java-related experience, projects, frameworks, backend exposure, databases, and cloud/DevOps skills.  If score > 8.5, add a brief highlight; else keep highlights empty."
-            }
-          ]
-        },
-        "batching": {
-          "batchSize": 5
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
-      "position": [
-        480,
-        32
-      ],
-      "id": "5cbb17b6-9997-409c-b6b4-1d2200a9a037",
-      "name": "Resume Ranker",
-      "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 4000
-    },
-    {
-      "parameters": {
         "modelName": "models/gemini-flash-latest",
         "options": {
           "maxOutputTokens": 1000,
@@ -291,7 +262,7 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "{\n\t\"rank\": 7,\n\t\"highlights\": \"\"\n}"
+        "jsonSchemaExample": "{\n\t\"score\": 7,\n\t\"highlights\": \"\"\n}"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
@@ -314,7 +285,7 @@
           "conditions": [
             {
               "id": "818673c0-7b7a-4c76-8bb2-e66e61e4ad16",
-              "leftValue": "={{ $json.output.rank }}",
+              "leftValue": "={{ $json.output.score }}",
               "rightValue": 8.5,
               "operator": {
                 "type": "number",
@@ -511,11 +482,12 @@
           "mappingMode": "defineBelow",
           "value": {
             "DateTime": "={{ $('On form submission').item.json.submittedAt }}",
-            "CandidtaName": "={{ $('On form submission').item.json['Name '] }}",
+            "CandidtaName": "={{ $('On form submission').item.json['Name'] }}",
             "Email ID": "={{ $('On form submission').item.json['Email ID'] }}",
             "Role": "={{ $('On form submission').item.json.Role }}",
-            "Rank": "={{ $json.output.rank }}",
-            "Highlights": "={{ $json.output.highlights }}"
+            "Highlights": "={{ $json.output.highlights }}",
+            "Score": "={{ $json.output.score }}",
+            "Resume": "={{ $('On form submission').item.json.Resume.filename }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -556,8 +528,18 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Rank",
-              "displayName": "Rank",
+              "id": "Resume",
+              "displayName": "Resume",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -583,8 +565,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1120,
-        32
+        1056,
+        128
       ],
       "id": "bcb7faf0-d042-4e1a-9282-745892af8da8",
       "name": "Top Candidates",
@@ -599,9 +581,169 @@
         }
       },
       "notes": "Top Candidates"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Evaluate the resume for the role of {{ $('On form submission').item.json.Role }}.\n\nReturn JSON only:\n{\n  \"score\": number (0–10),\n  \"highlights\": string\n}\n\nScoring rules:\n- Judge from  skills, experience, projects, tools, and certifications etc relevant to the role.\n- Penalize missing core skills, irrelevant experience, or low hands-on work.\n\nHighlight rule:\n- If score > 8.5, provide a 1–2 sentence highlight of the strongest strengths.\n- Otherwise return an empty string in \"highlights\".\n- Example :\n\"{\n\t\"score\": 7,\n\t\"highlights\": \"\"\n}\".\n\nhere the resume : \"{{ $json.text }}\"\n",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Evaluate the resume for Java Developer.  Return: {   \"score\": number (0–10),   \"highlights\": string }  Score strictly based on Java-related experience, projects, frameworks, backend exposure, databases, and cloud/DevOps skills.  If score > 8.5, add a brief highlight; else keep highlights empty."
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        480,
+        32
+      ],
+      "id": "5cbb17b6-9997-409c-b6b4-1d2200a9a037",
+      "name": "Resume Scoring",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 4000
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Man4YOLfMEtFzyKIT-DY5LISaurSKKDyKhDusinfaXI",
+          "mode": "list",
+          "cachedResultName": "All_ Candidates",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Man4YOLfMEtFzyKIT-DY5LISaurSKKDyKhDusinfaXI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Man4YOLfMEtFzyKIT-DY5LISaurSKKDyKhDusinfaXI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "DateTime": "={{ $('On form submission').item.json.submittedAt }}",
+            "CandidtaName": "={{ $('On form submission').item.json['Name'] }}",
+            "Role": "={{ $('On form submission').item.json.Role }}",
+            "Email ID": "={{ $('On form submission').item.json['Email ID'] }}",
+            "Score": "={{ $json.output.score }}",
+            "Highlights": "={{ $json.output.highlights }}",
+            "Resume": "={{ $('On form submission').item.json.Resume.filename }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "DateTime",
+              "displayName": "DateTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CandidtaName",
+              "displayName": "CandidtaName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email ID",
+              "displayName": "Email ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resume",
+              "displayName": "Resume",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Highlights",
+              "displayName": "Highlights",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1056,
+        288
+      ],
+      "id": "f68725de-6a9c-40fc-802e-7135e1d56568",
+      "name": "All Candidates",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 4000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ueSX51XWGCEGc3gM",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Resume Scoring": [
+      {
+        "json": {
+          "output": {
+            "score": 9,
+            "highlights": "The candidate demonstrates exceptional proficiency in modern Agentic AI systems using LangChain and LangGraph, coupled with strong foundational skills in Computer Vision (CNNs, TensorFlow) and productionizing models via FastAPI and Docker."
+          }
+        }
+      }
+    ]
+  },
   "connections": {
     "On form submission": {
       "main": [
@@ -655,7 +797,7 @@
       "main": [
         [
           {
-            "node": "Resume Ranker",
+            "node": "Resume Scoring",
             "type": "main",
             "index": 0
           }
@@ -666,7 +808,7 @@
       "ai_languageModel": [
         [
           {
-            "node": "Resume Ranker",
+            "node": "Resume Scoring",
             "type": "ai_languageModel",
             "index": 0
           }
@@ -677,7 +819,7 @@
       "ai_languageModel": [
         [
           {
-            "node": "Resume Ranker",
+            "node": "Resume Scoring",
             "type": "ai_languageModel",
             "index": 1
           }
@@ -688,19 +830,8 @@
       "ai_outputParser": [
         [
           {
-            "node": "Resume Ranker",
+            "node": "Resume Scoring",
             "type": "ai_outputParser",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Resume Ranker": {
-      "main": [
-        [
-          {
-            "node": "Filter",
-            "type": "main",
             "index": 0
           }
         ]
@@ -716,13 +847,29 @@
           }
         ]
       ]
+    },
+    "Resume Scoring": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "All Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "97315662-ee5a-4c6d-ac65-a34c010c0942",
+  "versionId": "35e2bd19-1efe-4a06-aa21-fba3ddf24d37",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e9c80629f938075ea43b6f3dc6d481c44b7fff12ee83b490156981465271a6f1"
